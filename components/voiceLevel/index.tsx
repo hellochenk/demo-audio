@@ -57,6 +57,7 @@ export const VoiceLevel = () => {
       setInterval(() => {
         const volumeLevel = getVolumeLevel();
         console.log("音量级别：", volumeLevel);
+        console.log("stream active", stream?.active);
         // 在这里你可以根据音量级别来做一些处理
       }, 1000); // 每100毫秒获取一次音量级别
     }

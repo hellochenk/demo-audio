@@ -4,88 +4,70 @@ import MyDevice from "@/components/myDevice";
 import { VoiceLevel } from "@/components/voiceLevel";
 import { Button, Divider, List, ListItem } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-
-const colors = ["black", "blue", "brown", "chocolate", "coral", "red"];
-const grammar =
-  "#JSGF V1.0; grammar colors; public <color> = " + colors.join(" | ") + " ;";
+import { useSpeechRecognition } from "../../src/audio/useSpeechRecognition";
+import { useSpeechStore } from "@/src/audio/store";
+import { animated, useSpring } from "@react-spring/web";
+import { useSpeechSynthesis } from "@/src/audio/useSpeechSynthesis";
 
 export default function Audio() {
   const [isRecord, setRecordState] = useState<boolean>(false);
 
   const [state, setState] = useState<string>("");
 
-  const SpeechRecognitionREF = useRef<SpeechRecognition | null>(null);
-  const SpeechGrammarListREF = useRef<SpeechGrammarList | null>(null);
+  const { mySpeechRecognition } = useSpeechRecognition();
+  const { speak } = useSpeechSynthesis();
+  const speechResult = useSpeechStore((state) => state.result);
 
-  useEffect(() => {
-    if ("SpeechRecognition" in window && "SpeechGrammarList" in window) {
-      const recognition = new SpeechRecognition();
-      SpeechRecognitionREF.current = recognition;
+  const [props, api] = useSpring(
+    () => ({
+      from: { length: 0 },
+    }),
+    []
+  );
 
-      const grammarList = new SpeechGrammarList();
-      SpeechGrammarListREF.current = grammarList;
-    } else if (
-      "webkitSpeechRecognition" in window &&
-      "webkitSpeechGrammarList" in window
-    ) {
-      const recognition = new webkitSpeechRecognition();
-      SpeechRecognitionREF.current = recognition;
-
-      const grammarList = new webkitSpeechGrammarList();
-      SpeechGrammarListREF.current = grammarList;
-    } else {
-      console.log("not support speech");
-      return;
-    }
-    console.log("init success");
-
-    SpeechGrammarListREF.current.addFromString(grammar, 1);
-
-    SpeechRecognitionREF.current.grammars = SpeechGrammarListREF.current;
-    //SpeechRecognitionREF.current.continuous = false;
-    SpeechRecognitionREF.current.lang = "en-US";
-    SpeechRecognitionREF.current.interimResults = false;
-    SpeechRecognitionREF.current.maxAlternatives = 1;
-
-    // handle event!
-
-    SpeechRecognitionREF.current.onresult = function (event) {
-      var last = event.results.length - 1;
-      var color = event.results[last][0].transcript;
-
-      console.log("onresult", color);
-      setState(color);
-      // diagnostic.textContent = 'Result received: ' + color + '.';
-      // bg.style.backgroundColor = color;
-      console.log("Confidence: " + event.results[0][0].confidence);
-    };
-
-    SpeechRecognitionREF.current.onnomatch = function (event) {
-      setState("I didnt recognise that color.");
-      console.log("I didnt recognise that color.");
-    };
-
-    SpeechRecognitionREF.current.onerror = function (event) {
-      setState("Error occurred in recognition: " + event.error);
-
-      console.log("Error occurred in recognition: " + event.error);
-    };
-  });
+  // useEffect(() => {
+  //   api.start({
+  //     from: {
+  //       length: 0,
+  //     },
+  //     to: {
+  //       length: speechResult.length,
+  //     },
+  //     config: {
+  //       duration: speechResult.length * 100,
+  //     },
+  //   });
+  // }, [api, speechResult]);
 
   const handleStart = () => {
-    if (SpeechRecognitionREF.current) {
+    if (mySpeechRecognition) {
       setRecordState(true);
       console.log("record");
-      SpeechRecognitionREF.current.start();
+      mySpeechRecognition.start();
     }
   };
 
   const handleStop = () => {
-    if (SpeechRecognitionREF.current) {
+    if (mySpeechRecognition) {
       setRecordState(false);
       console.log("stop");
-      SpeechRecognitionREF.current.stop();
+      mySpeechRecognition.stop();
     }
+  };
+
+  const handlePlay = () => {
+    speak(speechResult);
+    api.start({
+      from: {
+        length: 0,
+      },
+      to: {
+        length: speechResult.length,
+      },
+      config: {
+        duration: speechResult.length * 50,
+      },
+    });
   };
 
   return (
@@ -96,22 +78,28 @@ export default function Audio() {
 
       <Divider />
 
-      <VoiceLevel />
+      {/* <VoiceLevel /> */}
 
       <Divider />
 
-      {/* <div onClick={handleClick}>start</div> */}
       <ListItem>
-        <span>result: </span>
-        <p className="hints">{state}</p>
+        <span className="pr-4">result: </span>
+        <div className="hints text-red-300">
+          <animated.div>
+            {props.length.to((x) =>
+              speechResult.slice(0, Number(x.toFixed(0)))
+            )}
+          </animated.div>
+          {speechResult}
+        </div>
       </ListItem>
 
       <Divider />
 
-      <div className="flex w-full fixed bottom-1 left-0 px-4">
+      <div className="flex flex-col w-full fixed bottom-1 left-0 px-4">
         <Button
-          size="large"
           fullWidth
+          size="large"
           type="button"
           variant="outlined"
           onMouseDown={handleStart}
@@ -120,6 +108,17 @@ export default function Audio() {
           onTouchEnd={handleStop}
         >
           {isRecord ? "stop" : "press to start"}
+        </Button>
+        <Divider />
+        <Button
+          fullWidth
+          size="large"
+          disabled={!speechResult}
+          type="button"
+          variant="outlined"
+          onClick={handlePlay}
+        >
+          play
         </Button>
       </div>
     </List>

@@ -1,4 +1,4 @@
-import { updateSpeechResult } from "@/src/audio/store";
+import { updateSpeechResult } from "@/src/myAudio/store";
 import { useEffect, useMemo, useState } from "react";
 
 const colors = ["black", "blue", "brown", "chocolate", "coral", "red"];

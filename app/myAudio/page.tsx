@@ -1,21 +1,20 @@
 "use client";
 
-import MyDevice from "@/components/myDevice";
-import { VoiceLevel } from "@/components/voiceLevel";
+import MyDevice from "@/src/myAudio/components/myDevice";
+import { VoiceLevel } from "@/src/myAudio/components/voiceLevel";
 import { Button, Divider, List, ListItem } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { useSpeechRecognition } from "../../src/audio/useSpeechRecognition";
-import { useSpeechStore } from "@/src/audio/store";
+import { useSpeechRecognition } from "../../src/myAudio/hooks/useSpeechRecognition";
+import { useSpeechStore } from "@/src/myAudio/store";
 import { animated, useSpring } from "@react-spring/web";
-import { useSpeechSynthesis } from "@/src/audio/useSpeechSynthesis";
+import { useSpeechSynthesis } from "@/src/myAudio/hooks/useSpeechSynthesis";
 
 export default function Audio() {
   const [isRecord, setRecordState] = useState<boolean>(false);
 
   const [state, setState] = useState<string>("");
-
-  const { mySpeechRecognition } = useSpeechRecognition();
   const { speak } = useSpeechSynthesis();
+  const { mySpeechRecognition } = useSpeechRecognition();
   const speechResult = useSpeechStore((state) => state.result);
 
   const [props, api] = useSpring(

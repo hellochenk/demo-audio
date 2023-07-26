@@ -8,14 +8,16 @@ import { useSpeechRecognition } from "../../src/myAudio/hooks/useSpeechRecogniti
 import { useSpeechStore } from "@/src/myAudio/store";
 import { animated, useSpring } from "@react-spring/web";
 import { useSpeechSynthesis } from "@/src/myAudio/hooks/useSpeechSynthesis";
+import { DeviceHeader } from "@/src/myAudio/components/deviceHeader";
 
 export default function Audio() {
   const [isRecord, setRecordState] = useState<boolean>(false);
 
   const [state, setState] = useState<string>("");
-  const { speak } = useSpeechSynthesis();
-  const { mySpeechRecognition } = useSpeechRecognition();
-  const speechResult = useSpeechStore((state) => state.result);
+  // const { speak } = useSpeechSynthesis();
+  // const { mySpeechRecognition } = useSpeechRecognition();
+
+  // const speechResult = useSpeechStore((state) => state.result);
 
   const [props, api] = useSpring(
     () => ({
@@ -24,7 +26,24 @@ export default function Audio() {
     []
   );
 
-  // useEffect(() => {
+  // const handleStart = () => {
+  //   if (mySpeechRecognition) {
+  //     setRecordState(true);
+  //     console.log("record");
+  //     mySpeechRecognition.start();
+  //   }
+  // };
+
+  // const handleStop = () => {
+  //   if (mySpeechRecognition) {
+  //     setRecordState(false);
+  //     console.log("stop");
+  //     mySpeechRecognition.stop();
+  //   }
+  // };
+
+  // const handlePlay = () => {
+  //   speak(speechResult);
   //   api.start({
   //     from: {
   //       length: 0,
@@ -33,55 +52,24 @@ export default function Audio() {
   //       length: speechResult.length,
   //     },
   //     config: {
-  //       duration: speechResult.length * 100,
+  //       duration: speechResult.length * 50,
   //     },
   //   });
-  // }, [api, speechResult]);
-
-  const handleStart = () => {
-    if (mySpeechRecognition) {
-      setRecordState(true);
-      console.log("record");
-      mySpeechRecognition.start();
-    }
-  };
-
-  const handleStop = () => {
-    if (mySpeechRecognition) {
-      setRecordState(false);
-      console.log("stop");
-      mySpeechRecognition.stop();
-    }
-  };
-
-  const handlePlay = () => {
-    speak(speechResult);
-    api.start({
-      from: {
-        length: 0,
-      },
-      to: {
-        length: speechResult.length,
-      },
-      config: {
-        duration: speechResult.length * 50,
-      },
-    });
-  };
+  // };
 
   return (
-    <List className=" flex flex-col gap-1 justify-center px-4">
-      <h1 className="text-3xl font-bold underline">Audio</h1>
+    <List className="h-[100vh] flex flex-col gap-4 px-4 bg-gray-200">
+      {/* DeviceHeader */}
+      <DeviceHeader />
+
       {/* device */}
       <MyDevice />
 
-      <Divider />
-
       {/* <VoiceLevel /> */}
 
-      <Divider />
+      {/* <Divider /> */}
 
-      <ListItem>
+      {/* <ListItem>
         <span className="pr-4">result: </span>
         <div className="hints text-red-300">
           <animated.div>
@@ -91,11 +79,9 @@ export default function Audio() {
           </animated.div>
           {speechResult}
         </div>
-      </ListItem>
+      </ListItem> */}
 
-      <Divider />
-
-      <div className="flex flex-col w-full fixed bottom-1 left-0 px-4">
+      {/* <div className="flex flex-col w-full fixed bottom-1 left-0 px-4">
         <Button
           fullWidth
           size="large"
@@ -119,7 +105,7 @@ export default function Audio() {
         >
           play
         </Button>
-      </div>
+      </div> */}
     </List>
   );
 }

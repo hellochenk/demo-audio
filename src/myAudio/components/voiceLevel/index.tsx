@@ -1,9 +1,13 @@
 "use client";
 
+import { AppSection } from "@/components/appSection";
 import { useEffect, useRef } from "react";
+import { useSpeechStore } from "../../store";
 
 export const VoiceLevel = () => {
   const audioContextRef = useRef<AudioContext | null>(null);
+
+  const mediaStream = useSpeechStore((state) => state.mediaStream);
 
   useEffect(() => {
     if ("AudioContext" in window) {
@@ -16,24 +20,13 @@ export const VoiceLevel = () => {
       return;
     }
 
-    async function getMicrophoneStream() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-        });
-        return stream;
-      } catch (error) {
-        console.error("无法获取麦克风权限：", error);
-        return null;
-      }
-    }
-
     function setupAudioAnalyser(stream?: MediaStream) {
       if (!stream) {
         return;
       }
       const mediaStreamSource =
         audioContextRef.current!.createMediaStreamSource(stream);
+
       const analyserNode = audioContextRef.current!.createAnalyser();
 
       // 配置AnalyserNode
@@ -64,16 +57,15 @@ export const VoiceLevel = () => {
 
     // 使用示例
     async function main() {
-      const stream = await getMicrophoneStream();
-      if (stream) {
-        setupAudioAnalyser(stream);
+      if (mediaStream) {
+        setupAudioAnalyser(mediaStream);
       } else {
         console.log("未获得麦克风权限，无法获取音频输入。");
       }
     }
 
     main();
-  }, []);
+  }, [mediaStream]);
 
-  return <div>voice level</div>;
+  return <AppSection>voice level:</AppSection>;
 };

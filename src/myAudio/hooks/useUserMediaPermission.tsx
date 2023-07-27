@@ -1,33 +1,18 @@
 import { useCallback, useEffect, useMemo } from "react";
 
-type UseMicrophonePermissionHooksProps = {
-  successCallback?: (MediaStream: MediaStream) => unknown;
-  fallCallback?: () => unknown;
-};
-
-export const useMicrophonePermission = (
-  props?: UseMicrophonePermissionHooksProps
-) => {
-  const { successCallback, fallCallback } = props || {};
-
+export const useMicrophonePermission = () => {
   const getPermission = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
-
-      // clear stream
       stream.getTracks().forEach((track) => track.stop());
-
-      console.log("get");
-      successCallback?.(stream);
-      return true;
+      return stream;
     } catch (error) {
       console.error("无法获取麦克风权限：", error);
-      fallCallback?.();
-      return false;
+      return null;
     }
-  }, [fallCallback, successCallback]);
+  }, []);
 
   const testDevicesInfo = async () => {
     try {

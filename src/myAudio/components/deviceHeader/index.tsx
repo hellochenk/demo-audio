@@ -5,6 +5,8 @@ import { useMicrophonePermission } from "../../hooks/useUserMediaPermission";
 import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 
+import cn from "classnames";
+
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
   ref
@@ -21,32 +23,45 @@ export const DeviceHeader = () => {
     (state) => state.hasMicrophonePermission
   );
 
-  const myRef = useRef({
-    successCallback(stream: MediaStream) {
-      console.log({ stream });
-      setMediaStream(stream);
-    },
-    fallCallback() {
-      setAlertOpen(true);
-    },
-  });
+  const { getPermission } = useMicrophonePermission();
 
-  const { getPermission } = useMicrophonePermission(myRef.current);
+  const handleRequestPermission = useCallback(() => {
+    getPermission()
+      .then((res) => {
+        if (res) {
+          console.log({ res });
+          setMediaStream(res);
+        } else {
+          setAlertOpen(true);
+        }
+      })
+      .catch((error) => {
+        console.log({ error });
+      });
+  }, [getPermission]);
 
   useEffect(() => {
-    getPermission();
-  }, [getPermission]);
+    handleRequestPermission();
+  }, [handleRequestPermission]);
 
   return (
     <AppSection>
-      <h1 className="text-3xl font-bold underline">
+      <h1 className={cn("text-3xl font-bold underline mb-4")}>
         Audio:
-        {hasMicrophonePermission || mediaStream
-          ? "Audio Permission Got"
-          : "Need Audio Permission"}
+        <span className={mediaStream ? "text-green-500" : "text-red-500"}>
+          {hasMicrophonePermission || mediaStream
+            ? "Audio Permission Got"
+            : "Need Audio Permission"}
+        </span>
       </h1>
 
-      <Button onClick={getPermission}>Click To Get Permission</Button>
+      <Button
+        type="button"
+        variant="outlined"
+        onClick={handleRequestPermission}
+      >
+        Click To Get Permission
+      </Button>
 
       <Snackbar
         open={isAlertOpen}

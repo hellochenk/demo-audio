@@ -1,6 +1,6 @@
 "use client";
 
-import MyDevice from "@/src/myAudio/components/myDevice";
+import { DeviceList } from "@/src/myAudio/components/deviceList";
 import { VoiceLevel } from "@/src/myAudio/components/voiceLevel";
 import { Button, Divider, List, ListItem } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
@@ -63,11 +63,9 @@ export default function Audio() {
       <DeviceHeader />
 
       {/* device */}
-      <MyDevice />
+      <DeviceList />
 
       {/* <VoiceLevel /> */}
-
-      {/* <Divider /> */}
 
       {/* <ListItem>
         <span className="pr-4">result: </span>

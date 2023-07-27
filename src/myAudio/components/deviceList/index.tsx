@@ -14,7 +14,7 @@ import { setMediaStream, useSpeechStore } from "../../store";
 
 // devices change event & update devices Info
 
-const MyDevice = () => {
+export const DeviceList = () => {
   const [selected, setSelected] = useState<string>("");
   const { devices } = useDeviceList();
 
@@ -56,5 +56,3 @@ const MyDevice = () => {
     </AppSection>
   );
 };
-
-export default MyDevice;

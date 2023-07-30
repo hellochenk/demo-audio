@@ -9,6 +9,8 @@ import { useSpeechStore } from "@/src/myAudio/store";
 import { animated, useSpring } from "@react-spring/web";
 import { useSpeechSynthesis } from "@/src/myAudio/hooks/useSpeechSynthesis";
 import { DeviceHeader } from "@/src/myAudio/components/deviceHeader";
+import { Action } from "@/src/myAudio/components/Action";
+import AudioRecorder from "./demo";
 
 export default function Audio() {
   const [isRecord, setRecordState] = useState<boolean>(false);
@@ -26,37 +28,6 @@ export default function Audio() {
     []
   );
 
-  // const handleStart = () => {
-  //   if (mySpeechRecognition) {
-  //     setRecordState(true);
-  //     console.log("record");
-  //     mySpeechRecognition.start();
-  //   }
-  // };
-
-  // const handleStop = () => {
-  //   if (mySpeechRecognition) {
-  //     setRecordState(false);
-  //     console.log("stop");
-  //     mySpeechRecognition.stop();
-  //   }
-  // };
-
-  // const handlePlay = () => {
-  //   speak(speechResult);
-  //   api.start({
-  //     from: {
-  //       length: 0,
-  //     },
-  //     to: {
-  //       length: speechResult.length,
-  //     },
-  //     config: {
-  //       duration: speechResult.length * 50,
-  //     },
-  //   });
-  // };
-
   return (
     <List className="h-[100vh] flex flex-col gap-4 px-4 bg-gray-200">
       {/* DeviceHeader */}
@@ -65,45 +36,8 @@ export default function Audio() {
       {/* device */}
       <DeviceList />
 
-      {/* <VoiceLevel /> */}
-
-      {/* <ListItem>
-        <span className="pr-4">result: </span>
-        <div className="hints text-red-300">
-          <animated.div>
-            {props.length.to((x) =>
-              speechResult.slice(0, Number(x.toFixed(0)))
-            )}
-          </animated.div>
-          {speechResult}
-        </div>
-      </ListItem> */}
-
-      {/* <div className="flex flex-col w-full fixed bottom-1 left-0 px-4">
-        <Button
-          fullWidth
-          size="large"
-          type="button"
-          variant="outlined"
-          onMouseDown={handleStart}
-          onMouseUp={handleStop}
-          onTouchStart={handleStart}
-          onTouchEnd={handleStop}
-        >
-          {isRecord ? "stop" : "press to start"}
-        </Button>
-        <Divider />
-        <Button
-          fullWidth
-          size="large"
-          disabled={!speechResult}
-          type="button"
-          variant="outlined"
-          onClick={handlePlay}
-        >
-          play
-        </Button>
-      </div> */}
+      {/* behavior */}
+      <Action />
     </List>
   );
 }

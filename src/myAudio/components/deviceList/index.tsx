@@ -27,9 +27,12 @@ export const DeviceList = () => {
         audio: { deviceId: { exact: deviceId } },
       };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+      // stream.getTracks().forEach((track) => track.stop());
+
       // 在此处使用新的媒体流进行后续处理
       setMediaStream(stream);
-      console.log("已切换到新的音频输入设备");
+      console.log("已切换到新的音频输入设备", stream);
     } catch (error) {
       console.error("切换设备时出错：", error);
     }

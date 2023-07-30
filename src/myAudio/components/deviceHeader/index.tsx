@@ -1,3 +1,5 @@
+"use client";
+
 import { AppSection } from "@/components/appSection";
 import { useSpeechStore, setMediaStream } from "../../store";
 import { Button, Snackbar } from "@mui/material";
@@ -28,9 +30,9 @@ export const DeviceHeader = () => {
   const handleRequestPermission = useCallback(() => {
     getPermission()
       .then((res) => {
+        setMediaStream(res);
         if (res) {
           console.log({ res });
-          setMediaStream(res);
         } else {
           setAlertOpen(true);
         }

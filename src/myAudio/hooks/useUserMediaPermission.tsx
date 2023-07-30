@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo } from "react";
+import { useSpeechStore } from "../store";
 
 export const useMicrophonePermission = () => {
   const getPermission = useCallback(async () => {
@@ -6,7 +7,7 @@ export const useMicrophonePermission = () => {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
-      stream.getTracks().forEach((track) => track.stop());
+      // stream.getTracks().forEach((track) => track.stop());
       return stream;
     } catch (error) {
       console.error("无法获取麦克风权限：", error);

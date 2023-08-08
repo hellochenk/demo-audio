@@ -1,5 +1,12 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+HTML5 Speech API play ground;
+- speech recording
+- play recorded
+- device switch
+  - todo: add devices change   
+- recognation STT
+
 ## Getting Started
 
 First, run the development server:
